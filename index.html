@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CSV Table Calculation</title>
+</head>
+<body>
+  <h2>Table 1 (CSV Data)</h2>
+  <table id="table1" border="1">
+    <tr><th>Index #</th><th>Value</th></tr>
+  </table>
+
+  <h2>Table 2 (Calculated Results)</h2>
+  <table id="table2" border="1">
+    <tr><th>Category</th><th>Value</th></tr>
+    <tr><td>Alpha</td><td id="alpha"></td></tr>
+    <tr><td>Beta</td><td id="beta"></td></tr>
+    <tr><td>Charlie</td><td id="charlie"></td></tr>
+  </table>
+
+  <script>
+    fetch('Table_Input.csv')
+      .then(response => response.text())
+      .then(text => {
+        const lines = text.trim().split('\n').slice(1); 
+
+        const data = {};
+        const table1 = document.getElementById('table1');
+
+        lines.forEach(line => {
+          const [index, valueStr] = line.split(',');
+          const value = parseFloat(valueStr);
+          data[index.trim()] = value;
+
+          const row = table1.insertRow();
+          const cell1 = row.insertCell(0);
+          const cell2 = row.insertCell(1);
+          cell1.innerText = index;
+          cell2.innerText = value;
+        });
+
+        const alpha = data["A5"] + data["A20"];
+        const beta = data["A15"] / data["A7"];
+        const charlie = data["A13"] * data["A12"];
+
+        document.getElementById("alpha").innerText = alpha;
+        document.getElementById("beta").innerText = beta.toFixed(2);
+        document.getElementById("charlie").innerText = charlie;
+      });
+  </script>
+</body>
+</html>
